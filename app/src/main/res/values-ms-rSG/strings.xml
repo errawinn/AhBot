@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_schedule">Jadual</string>
+    <string name="menu_settings">Tetapan</string>
+    <string name="main_welcome">Hi,</string>
+    <string name="menu_signOut">Log Keluar</string>
+    <string name="SignIn">Log Masuk</string>
+    <string name="Email_Phone">Emel/ Nombor Telefon</string>
+    <string name="Username">Nama Pengguna</string>
+    <string name="Password">Kata Laluan</string>
+    <string name="ConfirmPassword">Sahkan Kata Laluan</string>
+    <string name="ForgotPassword">Terlupa Kata Laluan?</string>
+    <string name="SignUpWith">Mendaftar Dengan</string>
+    <string name="SignInWith">Daftar Masuk Dengan</string>
+    <string name="SignUp">Mendaftar</string>
+    <string name="DontHaveAnAccount">Belum Mendaftar?</string>
+    <string name="AlreadyHaveAnAcc">Sudah Mendaftar?</string>
+</resources>

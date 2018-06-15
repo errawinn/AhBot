@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_settings">设定</string>
+    <string name="menu_schedule">时间表</string>
+    <string name="main_welcome">你好，</string>
+    <string name="menu_signOut">登出</string>
+    <string name="SignIn">登录</string>
+    <string name="Email_Phone">电邮/ 电话号码</string>
+    <string name="Username">用户名称</string>
+    <string name="Password">密码</string>
+    <string name="ConfirmPassword">确认密码</string>
+    <string name="ForgotPassword">忘了密码？</string>
+    <string name="SignUpWith">注册于</string>
+    <string name="SignInWith">登录于</string>
+    <string name="SignUp">注册</string>
+    <string name="DontHaveAnAccount">未注册账户？</string>
+    <string name="AlreadyHaveAnAcc">已有注册账户？</string>
+</resources>
