@@ -44,7 +44,7 @@
          android:layout_centerHorizontal="true"
          android:background="@color/colorPrimaryDark"
          android:textColor="#FFFF"
-         android:layout_below="@id/tvHi"
+         android:layout_below="@id/tvSpeech"
          android:layout_marginTop="100dp"
          />
 

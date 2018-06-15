@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         };
         //endregion
 
-        if (isShown = false) { //CHANGE THIS AFTER SIGN IN
+        if (isShown = false) { //CHANGE THIS TO FALSE AFTER SIGN IN
             // TODO: Setup Components
             setupViews();
             setupXiaoBaiButton();
