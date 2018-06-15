@@ -65,7 +65,7 @@ public class SignInUpDialog extends Dialog{
                         BtnLoginLogout.setText(R.string.SignUp);
                         TvSignInUpWith.setText(R.string.SignUpWith);
                         TvNoAcc.setText(R.string.AlreadyHaveAnAcc);
-                        TvSignInUp.setText(R.string.SignUp);
+                        TvSignInUp.setText(R.string.SignIn);
                         break;
                     case R.id.btnLoginSignUp:
                         //Todo: Sign in code
@@ -92,7 +92,7 @@ public class SignInUpDialog extends Dialog{
                         BtnLoginLogout.setText(R.string.SignIn);
                         TvSignInUpWith.setText(R.string.SignInWith);
                         TvNoAcc.setText(R.string.DontHaveAnAccount);
-                        TvSignInUp.setText(R.string.SignIn);
+                        TvSignInUp.setText(R.string.SignUp);
                         break;
                     case R.id.btnLoginSignUp:
                         //Todo: Sign up code

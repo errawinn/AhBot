@@ -25,4 +25,27 @@
         android:text="@string/main_welcome"
         android:textSize="20sp"/>
 
+    <TextView
+        android:id="@+id/tvSpeech"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tvHi"
+        android:layout_marginTop="50dp"
+        android:text="Say 'AhBot' or press Speak button"
+        android:textSize="20sp"/>
+
+     <Button
+         android:id="@+id/buttonSpeech"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         android:text="Speak"
+         android:layout_centerHorizontal="true"
+         android:background="@color/colorPrimaryDark"
+         android:textColor="#FFFF"
+         android:layout_below="@id/tvHi"
+         android:layout_marginTop="100dp"
+         />
+
 </RelativeLayout>
