@@ -1,5 +1,6 @@
 package com.example.clair.ahbot;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -7,16 +8,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener fAuthStateListener;
     private GoogleSignInClient mGoogleSignInClient;
     //endregion
-
-    //region firebase ml kit stuff
-    private final int BARCODE_RECO_REQ_CODE = 200;
+    public static final int PERMISSION_REQUEST = 200;
 
     private boolean isShown = false;
     Context mContext;
@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext=this;
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST);
+        }
         //region auth
         fFirebaseAuth= FirebaseAuth.getInstance();
         fAuthStateListener=new FirebaseAuth.AuthStateListener() {
@@ -97,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
                 if(user==null){
                     SignInUpDialog signInUpDialog=new SignInUpDialog(MainActivity.this);
                     signInUpDialog.setCancelable(false);
-
+                    signInUpDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     signInUpDialog.show();
-                    //isShown = false;
+                    isShown = true;
                 }
             }
         };
@@ -272,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     String text = texts.get(0);
 
-
                     //  String response;
                     //   if (text.equalsIgnoreCase("hello")) {
                     //       response = "hi there";
@@ -296,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void startAsr() {
         Runnable runnable = new Runnable() {
@@ -376,16 +377,16 @@ public class MainActivity extends AppCompatActivity {
                     if (speech.equalsIgnoreCase("weather_function")) {
                         responseText = getWeather();
 
-                    }else if(speech.toLowerCase().contains("okay")){
-
-                        Intent intent = new Intent(MainActivity.this, ChooserActivity.class);
+                    } else if (speech.equalsIgnoreCase("okay")) {
+                        responseText = speech;
+                        Intent intent = new Intent(MainActivity.this, ScanActivity.class);
                         startActivity(intent);
+
                     } else {
                         responseText = speech;
-                        startTts(responseText);
                     }
 
-
+                    startTts(responseText);
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
