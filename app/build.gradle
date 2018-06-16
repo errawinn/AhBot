@@ -8,6 +8,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,9 +27,15 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    //firebase dependencies
     implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.google.android.gms:play-services-vision:15.0.2'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
+
+    //facebook
     //implementation 'com.facebook.android:facebook-android-sdk:4.8.2'
     implementation 'com.facebook.android:facebook-login:[4,5)'
 

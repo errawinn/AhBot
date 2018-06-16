@@ -1,5 +1,6 @@
 package com.example.clair.ahbot;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -15,6 +17,8 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener fAuthStateListener;
     private GoogleSignInClient mGoogleSignInClient;
     //endregion
+    public static final int PERMISSION_REQUEST = 200;
 
     private boolean isShown = false;
     Context mContext;
@@ -83,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext=this;
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST);
+        }
         //region auth
         fFirebaseAuth= FirebaseAuth.getInstance();
         fAuthStateListener=new FirebaseAuth.AuthStateListener() {
@@ -368,6 +376,11 @@ public class MainActivity extends AppCompatActivity {
                     String responseText;
                     if (speech.equalsIgnoreCase("weather_function")) {
                         responseText = getWeather();
+
+                    } else if (speech.equalsIgnoreCase("okay")) {
+                        responseText = speech;
+                        Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+                        startActivity(intent);
 
                     } else {
                         responseText = speech;
