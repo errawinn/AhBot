@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 if(user==null){
                     SignInUpDialog signInUpDialog=new SignInUpDialog(MainActivity.this);
                     signInUpDialog.setCancelable(false);
-
+                    signInUpDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     signInUpDialog.show();
                     isShown = true;
                 }
