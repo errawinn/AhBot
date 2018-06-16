@@ -59,7 +59,8 @@
         android:hint="@string/Password"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        android:inputType="textPassword"/>
 
     <EditText
         android:id="@+id/etCfmPassword"
@@ -74,7 +75,8 @@
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
         android:textSize="16dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:inputType="textPassword"/>
 
     <TextView
         android:id="@+id/tvForgotPassword"

@@ -2,16 +2,41 @@ package com.example.clair.ahbot;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.concurrent.Executor;
 
 
 public class SignInUpDialog extends Dialog{
@@ -22,6 +47,19 @@ public class SignInUpDialog extends Dialog{
     EditText EtCfmPw,EtPw,EtEmailPhone,EtUsername;
     Button BtnGoogle,BtnLoginLogout,BtnFb;
     boolean SignInView=true;
+    //region firebase auth
+    private FirebaseAuth mAuth;
+    AuthCredential credentialGoogle;
+    AuthCredential credentialEmail;
+    AuthCredential credentialFb;
+    RelativeLayout activity_main;
+    private GoogleSignInClient mGoogleSignInClient;
+    //Snackbar snackbar;
+    String EmailNum,Email,Num,Password,CfmPw;
+
+    String reNum="/^[689]\\d{7}$/";
+    //endregion
+    MainActivity m;
 
     public SignInUpDialog(Activity a){
         super(a);
@@ -31,6 +69,7 @@ public class SignInUpDialog extends Dialog{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        m=new MainActivity();
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_login);
         RlLoginDialog=findViewById(R.id.rlLoginDialog);
@@ -46,7 +85,41 @@ public class SignInUpDialog extends Dialog{
         BtnLoginLogout=findViewById(R.id.btnLoginSignUp);
         BtnFb=findViewById(R.id.btn_SignInFb);
         BtnGoogle=findViewById(R.id.btn_SignInGoogle);
+        activity_main=findViewById(R.id.rlMainActivity);
         TvSignInUp.setOnClickListener(mListener);
+        TvForgotPw.setOnClickListener(mListener);
+        BtnFb.setOnClickListener(mListener);
+        BtnGoogle.setOnClickListener(mListener);
+        BtnLoginLogout.setOnClickListener(mListener);
+
+
+
+        mAuth=FirebaseAuth.getInstance();
+
+        //region Instantiate fb login button
+//        BtnFb.setReadPermissions("email", "public_profile");
+//        BtnFb.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                Log.d(TAG, "facebook:onCancel");
+//                // ...
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                Log.d(TAG, "facebook:onError", error);
+//                // ...
+//            }
+//        });
+
+        //endregion
+
     }
     private View.OnClickListener mListener=new View.OnClickListener() {
         @Override
@@ -68,13 +141,43 @@ public class SignInUpDialog extends Dialog{
                         TvSignInUp.setText(R.string.SignIn);
                         break;
                     case R.id.btnLoginSignUp:
-                        //Todo: Sign in code
+                        EmailNum=EtEmailPhone.getText().toString();
+                        Password=EtPw.getText().toString();
+                        //Todo: Phone number authentication
+                        if(EmailNum.matches(reNum)){
+                            Num=EmailNum;
+                            //Snackbar.make(activity_main,"Phone number authentication is currently unavailable.",//Snackbar.LENGTH_SHORT);
+                        }
+                        else{
+                            Email=EmailNum;
+                            //credentialEmail= EmailAuthProvider.getCredential(EtEmailPhone.getText().toString(),EtPw.getText().toString());
+                            loginEmail(mAuth,Email, Password);
+                        }
                         break;
                     case R.id.btn_SignInFb:
-                        //Todo: Sign in using fb code
+                        //Todo: Sign in with fb
+//                        credentialFb = FacebookAuthProvider.getCredential(token.getToken());
                         break;
                     case R.id.btn_SignInGoogle:
-                        //Todo: Sign in using google code
+                        //Todo: Sign in with google
+//                        credentialGoogle = GoogleAuthProvider.getCredential(googleIdToken, null);
+//
+//                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                                .requestIdToken(getContext().getResources().getString(R.string.GoogleWebClientID))
+//                                .requestEmail()
+//                                .build();
+//
+//                        mGoogleSignInClient= GoogleSignIn.getClient(activity,gso);
+//
+//                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(activity.getIntent());
+//                        try {
+//                            // Google Sign In was successful, authenticate with Firebase
+//                            GoogleSignInAccount account = task.getResult(ApiException.class);
+//                            firebaseAuthWithGoogle(account);
+//                        } catch (ApiException e) {
+//                            // Google Sign In failed, update UI appropriately
+//                            Log.w(TAG, "Google sign in failed", e);
+//                        }
                         break;
                     default:
                         //Todo: Dunno What to do
@@ -96,6 +199,23 @@ public class SignInUpDialog extends Dialog{
                         break;
                     case R.id.btnLoginSignUp:
                         //Todo: Sign up code
+                        EmailNum=EtEmailPhone.getText().toString();
+                        Password=EtPw.getText().toString();
+                        CfmPw=EtCfmPw.getText().toString();
+                        //Phone Sign Up
+                        if(EmailNum.matches(reNum)){
+                            Num=EmailNum;
+                        }
+                        //Email Sign Up
+                        else {
+                            Email=EmailNum;
+                            if (Password.equals(CfmPw))
+                                signUpUser(EtUsername.getText().toString(), Email, Password);
+                            else {
+                                //snackbar = //Snackbar.make(dialog.findViewById(R.id.rlMainActivity), "Password does not match", //Snackbar.LENGTH_SHORT);
+                                //snackbar.show();
+                            }
+                        }
                         break;
                     case R.id.btn_SignInFb:
                         //Todo: Sign up using fb code
@@ -108,10 +228,68 @@ public class SignInUpDialog extends Dialog{
                         break;
 
                 }
-//                dismiss();
             }
         }
     };
+
+    public void loginEmail(FirebaseAuth fFirebaseAuth,String email, final String password){
+        fFirebaseAuth.signInWithEmailAndPassword(email,password)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthException) {
+                            ((FirebaseAuthException) e).getErrorCode();
+                            Log.d("error",e.getMessage());
+                            //Snackbar.make(activity_main,e.getMessage(),//Snackbar.LENGTH_SHORT);
+                        }
+                    }
+                });
+        fFirebaseAuth.signInWithEmailAndPassword(email,password)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            if (password.length() < 6) {
+                                //Snackbar.make(activity_main,"Password must be more than 6 characters",//Snackbar.LENGTH_SHORT);
+                                //snackbar.show();
+                            } else {
+                                //Snackbar.make(activity_main,"Invalid Email or Password",//Snackbar.LENGTH_SHORT);
+                                //snackbar.show();
+                            }
+                        } else {
+                            //Snackbar.make(activity_main,"Sign in Successfully",//Snackbar.LENGTH_SHORT);
+                            //snackbar.show();
+                            dismiss();
+                        }
+                    }
+                });
+    }
+
+
+    private void signUpUser(final String username, String email, String password){
+        mAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(!task.isSuccessful()){
+                            //Snackbar.make(activity.findViewById(R.id.rlMainActivity),"Error"+task.getException(),//Snackbar.LENGTH_SHORT);
+                        }
+                        else{
+                            //todo: put username in firebase
+                            //Snackbar.make(activity_main,"Sign Up Successfully, Welcome "+username,//Snackbar.LENGTH_SHORT);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
 }
 
 

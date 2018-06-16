@@ -29,6 +29,11 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -58,45 +63,46 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    //region firebase database stuff
+    //region firebase database
 //    private FirebaseDatabase fFirebaseDatabase;
 //    private DatabaseReference fDatabaseReference;
 //    private ChildEventListener fChildEventListener;
 //    Firestore f;
     //endregion
 
-    //region firebase auth stuff
+    //region firebase auth
     private FirebaseAuth fFirebaseAuth;
     private FirebaseAuth.AuthStateListener fAuthStateListener;
+    private GoogleSignInClient mGoogleSignInClient;
     //endregion
 
     private boolean isShown = false;
     Context mContext;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
+        mContext=this;
         //region auth
-        fFirebaseAuth = FirebaseAuth.getInstance();
-        fAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        fFirebaseAuth= FirebaseAuth.getInstance();
+        fAuthStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    SignInUpDialog signInUpDialog = new SignInUpDialog(MainActivity.this);
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if(user==null){
+                    SignInUpDialog signInUpDialog=new SignInUpDialog(MainActivity.this);
                     signInUpDialog.setCancelable(false);
 
-                    signInUpDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     signInUpDialog.show();
                     isShown = true;
                 }
             }
         };
+
         //endregion
 
-        if (isShown = false) { //CHANGE THIS TO FALSE AFTER SIGN IN
+        //region setup tts
+        if (!isShown) { //CHANGE THIS TO FALSE AFTER SIGN IN
             // TODO: Setup Components
             setupViews();
             setupXiaoBaiButton();
@@ -107,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Start Hotword
             startHotword();
         }
+        //endregion
     }
 
     @Override
@@ -119,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (fAuthStateListener != null) {
+        if(fAuthStateListener!=null){
             fFirebaseAuth.removeAuthStateListener(fAuthStateListener);
         }
     }
@@ -127,10 +134,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fFirebaseAuth.addAuthStateListener(fAuthStateListener);
+       fFirebaseAuth.addAuthStateListener(fAuthStateListener);
     }
-
-    //region menu
+//region menu
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -145,6 +151,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_settings:
                 //TODO: create settings page
+                return true;
+            case R.id.menu_signOut:
+                FirebaseAuth.getInstance().signOut();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
