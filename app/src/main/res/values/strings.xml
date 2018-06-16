@@ -17,6 +17,8 @@
     <string name="Google" translatable="false">Google</string>
     <string name="Facebook" translatable="false">Facebook</string>
     <string name="DontHaveAnAccount">Don\'t Have An Account?</string>
+    <string name="desc_camera_source_activity">Vision detectors demo with live camera preview</string>
+    <string name="desc_still_image_activity">Vision detectors demo with a still image</string>
     <string name="GoogleWebClientID" translatable="false">1017446431793-7h27tpvjht5u0n2ialh4vs0d6a7v0u4c.apps.googleusercontent.com</string>
     <string name="facebook_app_id" translatable="false">1832597463467212</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb1832597463467212</string>

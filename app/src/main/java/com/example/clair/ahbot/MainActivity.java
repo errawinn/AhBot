@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -76,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     //endregion
 
+    //region firebase ml kit stuff
+    private final int BARCODE_RECO_REQ_CODE = 200;
+
     private boolean isShown = false;
     Context mContext;
     @Override
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     signInUpDialog.setCancelable(false);
 
                     signInUpDialog.show();
-                    isShown = true;
+                    //isShown = false;
                 }
             }
         };
@@ -267,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     String text = texts.get(0);
 
+
                     //  String response;
                     //   if (text.equalsIgnoreCase("hello")) {
                     //       response = "hi there";
@@ -290,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void startAsr() {
         Runnable runnable = new Runnable() {
@@ -369,11 +376,16 @@ public class MainActivity extends AppCompatActivity {
                     if (speech.equalsIgnoreCase("weather_function")) {
                         responseText = getWeather();
 
+                    }else if(speech.toLowerCase().contains("okay")){
+
+                        Intent intent = new Intent(MainActivity.this, ChooserActivity.class);
+                        startActivity(intent);
                     } else {
                         responseText = speech;
+                        startTts(responseText);
                     }
 
-                    startTts(responseText);
+
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
