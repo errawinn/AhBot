@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DisplayMedicine extends AppCompatActivity {
 
-    FirestoreHelper db = new FirestoreHelper();
+    FirebaseHelper db = new FirebaseHelper();
     TextView result;
-    List<Medicine> medList = db.getMedicineList();
+    String medList = db.getMed();
     String list = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,7 @@ public class DisplayMedicine extends AppCompatActivity {
         result = findViewById(R.id.results);
         String results = getIntent().getStringExtra("barcode");
 
-        for(int i = 0; i < medList.size(); i++) {
-            list += medList.get(i).toString() + "\n\n";
-        }
-        result.setText(list);
+
+        result.setText(medList);
     }
 }
