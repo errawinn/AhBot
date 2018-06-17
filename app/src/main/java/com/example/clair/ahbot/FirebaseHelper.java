@@ -1,6 +1,6 @@
 package com.example.clair.ahbot;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,3 +60,4 @@ public class FirebaseHelper {
         return value;
     }
 }
+*/

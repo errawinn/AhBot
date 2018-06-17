@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -212,7 +213,8 @@ public class SignInUpDialog extends Dialog{
                             if (Password.equals(CfmPw))
                                 signUpUser(EtUsername.getText().toString(), Email, Password);
                             else {
-                                //snackbar = //Snackbar.make(dialog.findViewById(R.id.rlMainActivity), "Password does not match", //Snackbar.LENGTH_SHORT);
+
+                               Snackbar.make(dialog.findViewById(R.id.rlMainActivity), "Password does not match", Snackbar.LENGTH_SHORT).show();
                                 //snackbar.show();
                             }
                         }
@@ -240,7 +242,7 @@ public class SignInUpDialog extends Dialog{
                         if (e instanceof FirebaseAuthException) {
                             ((FirebaseAuthException) e).getErrorCode();
                             Log.d("error",e.getMessage());
-                            //Snackbar.make(activity_main,e.getMessage(),//Snackbar.LENGTH_SHORT);
+                            //Snackbar.make(activity_main,e.getMessage(),Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -250,16 +252,16 @@ public class SignInUpDialog extends Dialog{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
                             if (password.length() < 6) {
-                                //Snackbar.make(activity_main,"Password must be more than 6 characters",//Snackbar.LENGTH_SHORT);
-                                //snackbar.show();
+                                //Snackbar.make(activity_main,"Password must be more than 6 characters",Snackbar.LENGTH_SHORT).show();
+                                //Snackbar.show();
                             } else {
-                                //Snackbar.make(activity_main,"Invalid Email or Password",//Snackbar.LENGTH_SHORT);
-                                //snackbar.show();
+                                //Snackbar.make(activity_main,"Invalid Email or Password",Snackbar.LENGTH_SHORT).show();
+                                //Snackbar.show();
                             }
                         } else {
-                            //Snackbar.make(activity_main,"Sign in Successfully",//Snackbar.LENGTH_SHORT);
-                            //snackbar.show();
-                            dismiss();
+                            //Snackbar.make(activity_main,"Sign in Successfully",Snackbar.LENGTH_SHORT).show();
+                            //Snackbar.show();
+                            //dismiss();
                         }
                     }
                 });
@@ -272,12 +274,12 @@ public class SignInUpDialog extends Dialog{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
-                            //Snackbar.make(activity.findViewById(R.id.rlMainActivity),"Error"+task.getException(),//Snackbar.LENGTH_SHORT);
+                            Snackbar.make(activity.findViewById(R.id.rlMainActivity),"Error"+task.getException(),Snackbar.LENGTH_SHORT).show();
                         }
                         else{
                             //todo: put username in firebase
-                            //Snackbar.make(activity_main,"Sign Up Successfully, Welcome "+username,//Snackbar.LENGTH_SHORT);
-                            dialog.dismiss();
+                            Snackbar.make(activity_main,"Sign Up Successfully, Welcome "+username,Snackbar.LENGTH_SHORT).show();
+                            dismiss();
                         }
                     }
                 });

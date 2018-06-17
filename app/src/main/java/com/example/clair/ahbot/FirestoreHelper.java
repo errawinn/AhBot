@@ -1,4 +1,4 @@
-/*package com.example.clair.ahbot;
+package com.example.clair.ahbot;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -20,13 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.ContentValues.TAG; */
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by user on 21/3/2018.
  */
 
-/*public class FirestoreHelper {
+public class FirestoreHelper {
     List<Medicine> medicineList;
     static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("Medicine");
 
@@ -92,7 +92,7 @@ import static android.content.ContentValues.TAG; */
 
     //one method to add one 'row' of data
   public static void saveData(Medicine medicine) {
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, String> data = new HashMap<String, String>();
       data.put("MedicineName", medicine.getMedName());
       data.put("Amount", medicine.getMedAmount());
       data.put("Frequency", medicine.getMedFrequency());
@@ -143,4 +143,5 @@ import static android.content.ContentValues.TAG; */
         return medicineList;
   }
 
-}*/
+
+}
