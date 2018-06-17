@@ -45,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -196,6 +197,13 @@ public class MainActivity extends AppCompatActivity {
                 shouldDetect = false; // prevent startAsr from running two times
             }
         });
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            Log.e("logged in", "NOT logged in");
+        } else{
+            Log.e("logged in", "IS logged in Email: :" + FirebaseAuth.getInstance().getCurrentUser().getEmail() );
+        }
+
     }
 
     private void setupXiaoBaiButton() {
@@ -356,8 +364,9 @@ public class MainActivity extends AppCompatActivity {
 
                     String responseText;
                     if (speech.equalsIgnoreCase("weather_function")) {
-                        responseText = getWeather();
-
+                        responseText = getWeather();}
+                       else if (speech.equalsIgnoreCase("medicine_function")) {
+                            responseText = getMedicine();
                     } else if (speech.equalsIgnoreCase("okay")) {
                         responseText = speech;
                         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
@@ -441,6 +450,7 @@ public class MainActivity extends AppCompatActivity {
         Threadings.runInBackgroundThread(runnable);
     }
 
+
     private String getWeather() {
         // TODO: (Optional) Get Weather Data via REST API
 
@@ -477,6 +487,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return "No weather info";
+
+
+    }
+    String i = "";
+    private String getMedicine() {
+//        FirestoreHelper db = new FirestoreHelper();
+//        List<Medicine> medList = db.getMedicineList();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            Log.e("logged in", "NOT logged in");
+        } else{
+            Log.e("logged in", "IS logged in Email: :" + FirebaseAuth.getInstance().getCurrentUser().getEmail() );
+        }
+        DisplayMedicine display = new DisplayMedicine();
+        return "hi";
+
+//        if (medList != null) {
+//
+//            for (Medicine medicine : medList) {
+//                i += medicine.getMedName() + " ";
+//            }
+//            return "Your medicine are " + i;
+//        } else{
+//            return "You haven't added any medicine";
+//        }
+
+
+
 
 
     }
