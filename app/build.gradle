@@ -31,11 +31,13 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     //firebase dependencies
+
     implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'com.google.firebase:firebase-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-vision:15.0.2'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.0.1'
 
     //facebook
     //implementation 'com.facebook.android:facebook-android-sdk:4.8.2'
