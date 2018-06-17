@@ -14,6 +14,7 @@ public class DisplayMedicine extends AppCompatActivity {
     TextView result;
     List<Medicine> medList = db.getMedicineList();
     String list = "";
+    public String medName = "start, ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +24,9 @@ public class DisplayMedicine extends AppCompatActivity {
         result = findViewById(R.id.results);
 
         for (Medicine medicine: medList) {
-            result.setText(medicine.getMedName());
-        }
+            medName = medicine.getMedName();
+            }
+        result.setText(medName);
 
     }
 }

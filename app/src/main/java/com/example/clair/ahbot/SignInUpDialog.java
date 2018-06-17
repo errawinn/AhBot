@@ -261,7 +261,7 @@ public class SignInUpDialog extends Dialog{
                         } else {
                             //Snackbar.make(activity_main,"Sign in Successfully",Snackbar.LENGTH_SHORT).show();
                             //Snackbar.show();
-                            //dismiss();
+                            dismiss();
                         }
                     }
                 });
