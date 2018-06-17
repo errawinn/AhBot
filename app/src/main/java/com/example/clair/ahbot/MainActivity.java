@@ -200,10 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupXiaoBaiButton() {
         String BUTTON_ACTION = "com.gowild.action.clickDown_action";
-
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BUTTON_ACTION);
-
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
