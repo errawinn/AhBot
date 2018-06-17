@@ -1,12 +1,19 @@
 package com.example.clair.ahbot;
 
+import android.media.RemoteController;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DisplayMedicine extends AppCompatActivity {
 
+    FirestoreHelper db = new FirestoreHelper();
     TextView result;
+    List<Medicine> medList = db.getMedicineList();
+    String list = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,6 +21,10 @@ public class DisplayMedicine extends AppCompatActivity {
 
         result = findViewById(R.id.results);
         String results = getIntent().getStringExtra("barcode");
-        result.setText(results);
+
+        for(int i = 0; i < medList.size(); i++) {
+            list += medList.get(i).toString() + "\n\n";
+        }
+        result.setText(list);
     }
 }

@@ -25,6 +25,7 @@ public class ScanActivity extends AppCompatActivity {
     BarcodeDetector barcode;
     CameraSource cameraSource;
     SurfaceHolder holder;
+    FirestoreHelper db = new FirestoreHelper();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,10 +78,11 @@ public class ScanActivity extends AppCompatActivity {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes =  detections.getDetectedItems();
                 if(barcodes.size() > 0){
-                    Intent intent = new Intent(getApplicationContext(),DisplayMedicine.class);
                     String barcode = barcodes.valueAt(0).displayValue;
-                    intent.putExtra("barcode", barcode);
-                    startActivity(intent);
+                    String id = "";
+                    String[] array = barcode.split("\r");
+                    Medicine medicine = new Medicine(id, array[0], array[1], array[2], array[3]);
+                    FirestoreHelper.saveData(medicine);
                     finish();
                 }
             }

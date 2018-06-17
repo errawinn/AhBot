@@ -90,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
         mContext=this;
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST);
+
         }
+
         //region auth
         fFirebaseAuth= FirebaseAuth.getInstance();
         fAuthStateListener=new FirebaseAuth.AuthStateListener() {
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user==null){
                     SignInUpDialog signInUpDialog=new SignInUpDialog(MainActivity.this);
-                    signInUpDialog.setCancelable(false);
+                    signInUpDialog.setCancelable(true);
                     signInUpDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     signInUpDialog.show();
                     isShown = true;
@@ -124,26 +126,7 @@ public class MainActivity extends AppCompatActivity {
         //endregion
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        MainActivity r=this;
-//        f=new Firestore(r);
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(fAuthStateListener!=null){
-            fFirebaseAuth.removeAuthStateListener(fAuthStateListener);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-       fFirebaseAuth.addAuthStateListener(fAuthStateListener);
-    }
 //region menu
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -410,13 +393,14 @@ public class MainActivity extends AppCompatActivity {
         snowboyDetect.applyFrontend(true);
     }
 
+
+
     private void startHotword() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 shouldDetect = true;
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
-
                 int bufferSize = 3200;
                 byte[] audioBuffer = new byte[bufferSize];
                 AudioRecord audioRecord = new AudioRecord(
@@ -497,6 +481,49 @@ public class MainActivity extends AppCompatActivity {
         return "No weather info";
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        MainActivity r=this;
+//        f=new Firestore(r);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(fAuthStateListener!=null){
+            fFirebaseAuth.removeAuthStateListener(fAuthStateListener);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        int bufferSize = 3200;
+        AudioRecord audioRecord = new AudioRecord(
+                MediaRecorder.AudioSource.DEFAULT,
+                16000,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize
+        );
+        if(shouldDetect) {
+            audioRecord.stop();
+            audioRecord.release();
+            Log.d("hotword", "stop listening to hotword");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fFirebaseAuth.addAuthStateListener(fAuthStateListener);
+        if(!shouldDetect) {
+            startHotword();
+        }
     }
 }
 
