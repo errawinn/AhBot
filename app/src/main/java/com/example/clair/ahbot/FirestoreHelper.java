@@ -1,7 +1,9 @@
 package com.example.clair.ahbot;
 
+import android.media.MediaExtractor;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -13,6 +15,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by user on 21/3/2018.
@@ -28,46 +32,56 @@ import static android.content.ContentValues.TAG;
 
 public class FirestoreHelper {
     List<Medicine> medicineList;
-    static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("Medicine");
+    static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("users").document("MedicineList").collection("Medicine");
 
-    public FirestoreHelper()
-    {
+    public FirestoreHelper() {
         //final MainActivity reference = r
         medicineCollection
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         medicineList = new ArrayList<>();
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "SUCCESSS");
+                        } else {
                             for (DocumentSnapshot document : task.getResult()) {
-                                if(document.exists()) {
+                                if (document.exists()) {
                                     String id = document.getId();
                                     String medName = document.getString("MedicineName");
                                     String amt = document.getString("Amount");
                                     String freq = document.getString("Frequency");
                                     String remarks = document.getString("Remarks");
 
-                                    if (medName != null && remarks != null && id != null) {
+                                    if (medName != null) {
                                         Medicine medicine = new Medicine(id, medName, amt, freq, remarks);
                                         medicineList.add(medicine);
+                                        setMedicineList(medicineList);
 
                                     }
-                                }else{
-                                    Log.d(TAG, "No such document");
-                                }
+                                }else {
+                                        Log.d(TAG, "No such document");
+                                    }
 
-                                //reference.UpdateList(medicineList);
-                               // reference.updateTasks();
+                                    //reference.UpdateList(medicineList);
+                                    // reference.updateTasks();
+
                             }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
+                    }
 
+
+                }
+        )
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
                     }
                 });
-
     }
+
+
 
 
     public static void deleteData(Medicine med) {
@@ -143,5 +157,7 @@ public class FirestoreHelper {
         return medicineList;
   }
 
-
+    public void setMedicineList(List<Medicine> medicineList) {
+        this.medicineList = medicineList;
+    }
 }

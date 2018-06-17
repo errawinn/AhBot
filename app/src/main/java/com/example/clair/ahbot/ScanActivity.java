@@ -19,6 +19,8 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScanActivity extends AppCompatActivity {
     SurfaceView cameraView;
@@ -80,9 +82,12 @@ public class ScanActivity extends AppCompatActivity {
                 if(barcodes.size() > 0){
                     String barcode = barcodes.valueAt(0).displayValue;
                     String id = "";
-                    String[] array = barcode.split("\r");
+                    String[] array = barcode.split("_");
                     Medicine medicine = new Medicine(id, array[0], array[1], array[2], array[3]);
+
                     FirestoreHelper.saveData(medicine);
+                    Intent intent = new Intent(getApplicationContext(), DisplayMedicine.class);
+                    startActivity(intent);
                     finish();
                 }
             }

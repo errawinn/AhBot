@@ -18,9 +18,9 @@ public class DisplayMedicine extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_medicine);
-
+        medList = new ArrayList<>();
+        medList = db.getMedicineList();
         result = findViewById(R.id.results);
-        String results = getIntent().getStringExtra("barcode");
 
         for (Medicine medicine: medList) {
             result.setText(medicine.getMedName());

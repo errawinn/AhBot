@@ -14,6 +14,9 @@ public class Medicine {
         this.medFrequency = medFrequency;
         this.remarks = remarks;
     }
+    public Medicine(){
+
+    }
 
     public String getId() {
         return id;

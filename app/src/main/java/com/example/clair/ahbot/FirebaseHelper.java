@@ -1,4 +1,4 @@
-package com.example.clair.ahbot;
+/*package com.example.clair.ahbot;
 
 /*import android.util.Log;
 
@@ -14,6 +14,7 @@ public class FirebaseHelper {
     FirebaseDatabase firebaseDatabase;
     static DatabaseReference databaseReference;
     String value;
+    Medicine medicine;
 
     public FirebaseHelper(){
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -26,7 +27,7 @@ public class FirebaseHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                value = dataSnapshot.getValue(String.class);
+                medicine = dataSnapshot.getValue(Medicine.class);
                 Log.d(TAG, "Value is: " + value);
             }
 
@@ -39,12 +40,13 @@ public class FirebaseHelper {
 
     }
 
+
     public static void saveData(Medicine med){
         final Medicine medicine = med;
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                databaseReference.setValue(medicine);
+                databaseReference.child().setValue(medicine);
             }
 
             @Override
@@ -56,8 +58,8 @@ public class FirebaseHelper {
 
     }
 
-    public String getMed(){
-        return value;
+    public Medicine getMed(){
+        return medicine;
     }
 }
 */
