@@ -23,44 +23,23 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.List;
+
 public class Schedule extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-
+private  SectionPageAdapter sectionPageAdapter;
+private ViewPager viewPager;
+List<ScheduleTask> scheduleTaskList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+        sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
+        viewPager=findViewById(R.id.container);
+        setupViewPager(viewPager);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+TabLayout tabLayout=findViewById(R.id.tabs);
+tabLayout.setupWithViewPager(viewPager);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +52,13 @@ public class Schedule extends AppCompatActivity {
 
     }
 
-
+    private void setupViewPager(ViewPager viewPager){
+        SectionPageAdapter sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
+        sectionPageAdapter.addFragment(new ScheduleToday(),"Today");
+        sectionPageAdapter.addFragment(new ScheduleThisWeek(),"This Week");
+        sectionPageAdapter.addFragment(new ScheduleAll(),"All");
+        viewPager.setAdapter(sectionPageAdapter);
+    }
     //region menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,71 +87,8 @@ public class Schedule extends AppCompatActivity {
         }
     }
     //endregion
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_schedule_all, container, false);
-
-            return rootView;
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    ScheduleToday today = new ScheduleToday();
-                    return today;
-                case 1:
-                    ScheduleThisWeek thisWeek = new ScheduleThisWeek();
-                    return thisWeek;
-                case 2:
-                    ScheduleAll all = new ScheduleAll();
-                    return all;
-                default:
-                    return null;
-            }
-        }
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-    }
+public void getTaskList(List<ScheduleTask> scheduleTasks){
+        scheduleTaskList=scheduleTasks;
+}
 }

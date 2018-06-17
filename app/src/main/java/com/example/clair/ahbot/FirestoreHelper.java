@@ -2,6 +2,7 @@ package com.example.clair.ahbot;
 
 import android.media.MediaExtractor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,7 +15,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -39,7 +42,7 @@ public class FirestoreHelper {
     List<ScheduleTask> Task=new ArrayList<>();
     Map<String, Object> Tasks = new HashMap<>();
 
-    // public FirestoreHelper() {
+    public FirestoreHelper() {}
     //final MainActivity reference = r
 
     public void storeMedicine() {
@@ -172,10 +175,40 @@ public class FirestoreHelper {
 
 
 
-
-
-public void getTasks(Schedule s){
+public void saveTask(Schedule s){
     final Schedule reference = s;
+
+        scheduleCollection
+                .addSnapshotListener(new EventListener<QuerySnapshot>()
+    {
+        @Override
+        public void onEvent(@Nullable QuerySnapshot value,
+            @Nullable FirebaseFirestoreException e)
+        {
+            if (e != null)
+            {
+                Log.w("FirestoreHelper", "Listen failed.", e);
+                return;
+            }
+
+            List<ScheduleTask> allTasks = new ArrayList<>();
+
+            for (DocumentSnapshot document : value)
+            {
+                String userID = document.getString("userID");
+                String taskName = document.getString("taskName");
+                String dueDate = document.getString("Date");
+                String time = document.getString("Time");
+
+                ScheduleTask scheduleTask = new ScheduleTask(userID,taskName, dueDate, time);
+                allTasks.add(scheduleTask);
+            }
+
+            reference.getTaskList(allTasks);
+        }
+    });
+}
+public List<ScheduleTask> getTasks(){
         scheduleCollection.get().
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -192,12 +225,14 @@ public void getTasks(Schedule s){
                                 ScheduleTask t = new ScheduleTask(userID,taskName, dueDate, time);
                                 Task.add(t);
                             }
+
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
+                            return;
                         }
                     }
                 });
-
+    return Task;
     }
 
     public void addTask(ScheduleTask st) {
