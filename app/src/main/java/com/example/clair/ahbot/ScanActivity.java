@@ -88,7 +88,7 @@ public class ScanActivity extends AppCompatActivity {
                     FirestoreHelper.saveData(medicine);
                     Intent intent = new Intent(getApplicationContext(), DisplayMedicine.class);
                     startActivity(intent);
-                    finish();
+                    //finish();
                 }
             }
         });

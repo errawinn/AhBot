@@ -22,4 +22,12 @@
     <string name="GoogleWebClientID" translatable="false">1017446431793-7h27tpvjht5u0n2ialh4vs0d6a7v0u4c.apps.googleusercontent.com</string>
     <string name="facebook_app_id" translatable="false">1832597463467212</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb1832597463467212</string>
+    <string name="title_activity_schedule">Schedule</string>
+    <string name="tab_text_1">Today</string>
+    <string name="tab_text_2">This Week</string>
+    <string name="tab_text_3">All</string>
+    <string name="main.msg.enterTask">Enter Task</string>
+    <string name="main.msg.enterDueDate">Choose Date</string>
+    <string name="main.msg.enterDueTime">Choose Time</string>
+    <string name="Everyday">Everyday</string>
 </resources>

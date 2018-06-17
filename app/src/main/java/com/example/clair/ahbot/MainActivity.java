@@ -138,8 +138,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_home:
+                return true;
             case R.id.menu_schedule:
-                //TODO: create schedule page
+                Intent intent=new Intent(MainActivity.this,Schedule.class);
+                startActivity(intent);
                 return true;
             case R.id.menu_settings:
                 //TODO: create settings page
@@ -372,7 +375,12 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
                         startActivity(intent);
 
-                    } else {
+                    } else if (speech.equalsIgnoreCase("redirecting you to schedule page")){
+                        responseText=speech;
+                        Intent intent=new Intent(MainActivity.this,Schedule.class);
+                        startActivity(intent);
+                    }
+                    else {
                         responseText = speech;
                     }
 
