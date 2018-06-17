@@ -90,7 +90,6 @@ public class Schedule extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.menu_schedule:
-                //TODO: create schedule page
                 return true;
             case R.id.menu_settings:
                 //TODO: create settings page
@@ -131,7 +130,7 @@ public class Schedule extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_schedule_all, container, false);
 
             return rootView;
         }
@@ -149,11 +148,21 @@ public class Schedule extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
 
+            switch (position) {
+                case 0:
+                    ScheduleToday today = new ScheduleToday();
+                    return today;
+                case 1:
+                    ScheduleThisWeek thisWeek = new ScheduleThisWeek();
+                    return thisWeek;
+                case 2:
+                    ScheduleAll all = new ScheduleAll();
+                    return all;
+                default:
+                    return null;
+            }
+        }
         @Override
         public int getCount() {
             // Show 3 total pages.

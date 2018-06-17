@@ -174,7 +174,7 @@ public class FirestoreHelper {
 
 
 
-public void storeTasks(Schedule s){
+public void getTasks(Schedule s){
     final Schedule reference = s;
         scheduleCollection.get().
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
