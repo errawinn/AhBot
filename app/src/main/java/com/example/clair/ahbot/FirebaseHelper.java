@@ -1,12 +1,18 @@
 /*package com.example.clair.ahbot;
 
-/*import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -15,6 +21,7 @@ public class FirebaseHelper {
     static DatabaseReference databaseReference;
     String value;
     Medicine medicine;
+    List<Medicine> medicineList = new ArrayList<>();
 
     public FirebaseHelper(){
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -27,8 +34,17 @@ public class FirebaseHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                medicine = dataSnapshot.getValue(Medicine.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                String id = snapshot.child("id").getValue(String.class);
+                String name = snapshot.child("medName").getValue(String.class);
+                String amt = snapshot.child("medAmount").getValue(String.class);
+                String freq = snapshot.child("medFrequency").getValue(String.class);
+                String remarks = snapshot.child("remarks").getValue(String.class);
+
+                medicine = new Medicine(id,name,amt,freq,remarks);
+                medicineList.add(medicine);
                 Log.d(TAG, "Value is: " + value);
+                }
             }
 
             @Override
@@ -46,7 +62,7 @@ public class FirebaseHelper {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                databaseReference.child().setValue(medicine);
+                databaseReference.push().setValue(medicine);
             }
 
             @Override
@@ -58,8 +74,8 @@ public class FirebaseHelper {
 
     }
 
-    public Medicine getMed(){
-        return medicine;
+    public List<Medicine> getMed(){
+        return medicineList;
     }
 }
 */

@@ -16,6 +16,8 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -81,12 +83,14 @@ public class ScanActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes =  detections.getDetectedItems();
                 if(barcodes.size() > 0){
                     String barcode = barcodes.valueAt(0).displayValue;
-                    String id = "";
+
+                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+                    String id = currentFirebaseUser.getUid();
                     String[] array = barcode.split("_");
                     Medicine medicine = new Medicine(id, array[0], array[1], array[2], array[3]);
 
-                    FirestoreHelper.saveData(medicine);
-                    Intent intent = new Intent(getApplicationContext(), DisplayMedicine.class);
+                    db.saveData(medicine);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     //finish();
                 }

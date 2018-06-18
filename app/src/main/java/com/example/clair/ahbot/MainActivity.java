@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.media.RemoteController;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -50,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 
 import ai.kitt.snowboy.SnowboyDetect;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isShown = false;
     Context mContext;
+    List<Medicine> medicines = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user==null){
                     SignInUpDialog signInUpDialog=new SignInUpDialog(MainActivity.this);
-                    signInUpDialog.setCancelable(true);
+                    signInUpDialog.setCancelable(false);
                     signInUpDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     signInUpDialog.show();
                     isShown = true;
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         if (!isShown) { //CHANGE THIS TO FALSE AFTER SIGN IN
             // TODO: Setup Components
             setupViews();
-            setupXiaoBaiButton();
+            //setupXiaoBaiButton();
             setupAsr();
             setupTts();
             setupNlu();
@@ -209,20 +212,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupXiaoBaiButton() {
-        String BUTTON_ACTION = "com.gowild.action.clickDown_action";
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BUTTON_ACTION);
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // TODO: Add action to do after button press is detected
-                //startAsr();
-                shouldDetect = false; // prevent startAsr from running two times
-            }
-        };
-        registerReceiver(broadcastReceiver, intentFilter);
-    }
+//    private void setupXiaoBaiButton() {
+//        String BUTTON_ACTION = "com.gowild.action.clickDown_action";
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(BUTTON_ACTION);
+//        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                // TODO: Add action to do after button press is detected
+//                //startAsr();
+//                shouldDetect = false; // prevent startAsr from running two times
+//            }
+//        };
+//        registerReceiver(broadcastReceiver, intentFilter);
+//    }
 
     private void setupAsr() {
         // TODO: Setup ASR --> Change Voice into Text
@@ -369,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
                     if (speech.equalsIgnoreCase("weather_function")) {
                         responseText = getWeather();}
                        else if (speech.equalsIgnoreCase("medicine_function")) {
-                            responseText = getMedicine();
+                            responseText = showMedicine();
                     } else if (speech.equalsIgnoreCase("okay")) {
                         responseText = speech;
                         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
@@ -498,33 +501,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    String i = "";
-    private String getMedicine() {
-//        FirestoreHelper db = new FirestoreHelper();
-//        List<Medicine> medList = db.getMedicineList();
+
+    FirestoreHelper db = new FirestoreHelper(this);
+    public void getMedicine(List<Medicine> medlist) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
             Log.e("logged in", "NOT logged in");
         } else{
             Log.e("logged in", "IS logged in Email: :" + FirebaseAuth.getInstance().getCurrentUser().getEmail() );
         }
-        DisplayMedicine display = new DisplayMedicine();
-        return "hi";
 
-//        if (medList != null) {
-//
-//            for (Medicine medicine : medList) {
-//                i += medicine.getMedName() + " ";
-//            }
-//            return "Your medicine are " + i;
-//        } else{
-//            return "You haven't added any medicine";
-//        }
+       // DisplayMedicine display = new DisplayMedicine();
+        medicines = medlist;
 
+    }
 
+    public String showMedicine(){
+        String i = "";
+        if (medicines != null) {
 
-
-
+            for (Medicine medicine : medicines) {
+                i += medicine.getMedName() + " " ;
+            }
+            return "Your medicine are " + i;
+        } else{
+            return "You haven't added any medicine";
+        }
     }
 
     @Override
@@ -546,29 +548,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        int bufferSize = 3200;
-        AudioRecord audioRecord = new AudioRecord(
-                MediaRecorder.AudioSource.DEFAULT,
-                16000,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize
-        );
-        if(shouldDetect) {
-            audioRecord.stop();
-            audioRecord.release();
-            Log.d("hotword", "stop listening to hotword");
-        }
+        shouldDetect = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         fFirebaseAuth.addAuthStateListener(fAuthStateListener);
-        if(!shouldDetect) {
-            startHotword();
-        }
+        shouldDetect = true;
     }
+    @Override
+    protected void onDestroy() {
+        shouldDetect = false;
+        //Close the Text to Speech Library
+        if(textToSpeech != null) {
+
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+            Log.d("tts", "TTS Destroyed");
+        }
+        try{
+            speechRecognizer.destroy();
+        }
+        catch (Exception e)
+        {
+            Log.e("nlu","Exception:"+e.toString());
+        }
+        super.onDestroy();
+    }
+
 }
 
 

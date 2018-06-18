@@ -10,23 +10,23 @@ import java.util.List;
 
 public class DisplayMedicine extends AppCompatActivity {
 
-    FirestoreHelper db = new FirestoreHelper();
+    FirestoreHelper db;
     TextView result;
-    List<Medicine> medList = db.getMedicineList();
+    List<Medicine> medicine;
     String list = "";
     public String medName = "start, ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_medicine);
-        medList = new ArrayList<>();
-        medList = db.getMedicineList();
-        result = findViewById(R.id.results);
+        db = new FirestoreHelper();
+        medicine =new ArrayList<>();
 
-        for (Medicine medicine: medList) {
+        for (Medicine medicine: medicine) {
             medName = medicine.getMedName();
             }
         result.setText(medName);
 
     }
+
 }

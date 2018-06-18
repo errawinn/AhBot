@@ -1,8 +1,10 @@
+
 package com.example.clair.ahbot;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,10 +40,8 @@ public class FirestoreHelper {
     Map<String, Object> Tasks = new HashMap<>();
 //    Schedule s=new Schedule();
 
-    public FirestoreHelper() {}
-    //final MainActivity reference = r
-
-    public void storeMedicine() {
+    public FirestoreHelper(MainActivity r) {
+        final MainActivity reference = r;
         FirebaseFirestore.getInstance().collection("users").document("MedicineList").collection("Medicine")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -54,7 +54,7 @@ public class FirestoreHelper {
                                                    //} else {
                                                    for (DocumentSnapshot document : task.getResult()) {
                                                        if (document != null) {
-                                                           String id = (String) document.getId();
+                                                           String id = (String) document.get("Id");
                                                            String medName = (String) document.get("MedicineName");
                                                            String amt = (String) document.get("Amount");
                                                            String freq = (String) document.get("Frequency");
@@ -66,14 +66,14 @@ public class FirestoreHelper {
                                                            medicineList.add(medicine);
 
                                                            setMedicineList(medicineList);
+                                                           Log.d(TAG, "Medicine List first item:" + medicineList.indexOf(0));
                                                            Log.d(TAG, "Medicine added");
 
                                                        } else {
                                                            Log.d(TAG, "No such document");
                                                        }
 
-                                                       //reference.UpdateList(medicineList);
-                                                       // reference.updateTasks();
+                                                       reference.getMedicine(medicineList);
 
                                                    }
                                                }
@@ -88,6 +88,12 @@ public class FirestoreHelper {
                         Toast.makeText(getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    public  FirestoreHelper(){}
+
+    public void storeMedicine(MainActivity r) {
+
     }
 
 
@@ -161,7 +167,6 @@ public class FirestoreHelper {
     }
 
     public List<Medicine> getMedicineList() {
-        storeMedicine();
         return medicineList;
     }
 
