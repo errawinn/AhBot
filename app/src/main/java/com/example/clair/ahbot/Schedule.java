@@ -23,22 +23,49 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class Schedule extends AppCompatActivity {
 
 private  SectionPageAdapter sectionPageAdapter;
 private ViewPager viewPager;
+
+    protected ScheduleAll scheduleAll;
+    protected ScheduleThisWeek scheduleThisWeek;
+    protected ScheduleToday scheduleToday;
+    FirestoreHelper firestoreHelper;
 List<ScheduleTask> scheduleTaskList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
+        scheduleAll = new ScheduleAll();
+        scheduleThisWeek = new ScheduleThisWeek();
+        scheduleToday = new ScheduleToday();        sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
         viewPager=findViewById(R.id.container);
         setupViewPager(viewPager);
+        firestoreHelper=new FirestoreHelper();
+        firestoreHelper.getTasks(this);
 
 TabLayout tabLayout=findViewById(R.id.tabs);
+tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+});
 tabLayout.setupWithViewPager(viewPager);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,9 +81,9 @@ tabLayout.setupWithViewPager(viewPager);
 
     private void setupViewPager(ViewPager viewPager){
         SectionPageAdapter sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
-        sectionPageAdapter.addFragment(new ScheduleToday(),"Today");
-        sectionPageAdapter.addFragment(new ScheduleThisWeek(),"This Week");
-        sectionPageAdapter.addFragment(new ScheduleAll(),"All");
+        sectionPageAdapter.addFragment(scheduleToday,"Today");
+        sectionPageAdapter.addFragment(scheduleThisWeek,"This Week");
+        sectionPageAdapter.addFragment(scheduleAll, "All");
         viewPager.setAdapter(sectionPageAdapter);
     }
     //region menu
@@ -88,7 +115,8 @@ tabLayout.setupWithViewPager(viewPager);
     }
     //endregion
 
-public void getTaskList(List<ScheduleTask> scheduleTasks){
+public void setTaskList(List<ScheduleTask> scheduleTasks){
         scheduleTaskList=scheduleTasks;
+     scheduleAll.UpdateList(scheduleTaskList);
 }
 }

@@ -1,5 +1,6 @@
 package com.example.clair.ahbot;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 
-public class ScheduleAll extends Fragment {
+public class ScheduleAll extends Fragment{
     public static final String TAB = "FragmentAll";
 
     RecyclerView rvScheduleAll;
@@ -31,14 +32,15 @@ public class ScheduleAll extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        s=new Schedule();
         View view = inflater.inflate(R.layout.fragment_schedule_all, container, false);
         rvScheduleAll = view.findViewById(R.id.rvScheduleAll);
-        rLayourManager=new LinearLayoutManager(getContext());
+        rLayourManager=new LinearLayoutManager(s.getApplication());
         rvScheduleAll.setLayoutManager(rLayourManager);
-        taskAdapter=new TaskAdapter(getContext());
+        taskAdapter=new TaskAdapter(this.getContext());
         rvScheduleAll.setAdapter(taskAdapter);
-        firestoreHelper=new FirestoreHelper();
-        UpdateList(s.scheduleTaskList);
+        //firestoreHelper.getTasks();
+
     return view;
     }
     public void UpdateList(List<ScheduleTask> st){

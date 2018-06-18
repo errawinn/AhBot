@@ -1,6 +1,5 @@
 package com.example.clair.ahbot;
 
-import android.media.MediaExtractor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,15 +9,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +36,7 @@ public class FirestoreHelper {
     CollectionReference scheduleCollection = FirebaseFirestore.getInstance().collection("Schedule");
     List<ScheduleTask> Task=new ArrayList<>();
     Map<String, Object> Tasks = new HashMap<>();
+//    Schedule s=new Schedule();
 
     public FirestoreHelper() {}
     //final MainActivity reference = r
@@ -204,11 +200,13 @@ public void saveTask(Schedule s){
                 allTasks.add(scheduleTask);
             }
 
-            reference.getTaskList(allTasks);
+            reference.setTaskList(allTasks);
         }
     });
 }
-public List<ScheduleTask> getTasks(){
+
+public void getTasks(Schedule s){
+        final Schedule ref=s;
         scheduleCollection.get().
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -224,7 +222,9 @@ public List<ScheduleTask> getTasks(){
 
                                 ScheduleTask t = new ScheduleTask(userID,taskName, dueDate, time);
                                 Task.add(t);
+
                             }
+                            ref.setTaskList(Task);
 
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -232,7 +232,6 @@ public List<ScheduleTask> getTasks(){
                         }
                     }
                 });
-    return Task;
     }
 
     public void addTask(ScheduleTask st) {
