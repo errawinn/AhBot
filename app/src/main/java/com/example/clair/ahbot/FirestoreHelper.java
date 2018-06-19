@@ -16,6 +16,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,65 +35,83 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class FirestoreHelper {
     List<Medicine> medicineList;
+    //region firebase database
+
+    //endregion
+
     static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("users").document("MedicineList").collection("Medicine");
 
 
-
     public FirestoreHelper(MainActivity r) {
+
         final MainActivity reference = r;
-        FirebaseFirestore.getInstance().collection("users").document("MedicineList").collection("Medicine")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                           @Override
-                                           public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                               medicineList = new ArrayList<>();
-
-                                               if (task.isSuccessful()) {
-                                                   // List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-                                                   //} else {
-                                                   for (DocumentSnapshot document : task.getResult()) {
-                                                       if (document != null) {
-                                                           String id = (String) document.get("Id");
-                                                           String medName = (String) document.get("MedicineName");
-                                                           String amt = (String) document.get("Amount");
-                                                           String freq = (String) document.get("Frequency");
-                                                           String remarks = (String) document.get("Remarks");
-
-                                                           Log.d(TAG, "MedicineName: " + medName);
-
-                                                           Medicine medicine = new Medicine(id, medName, amt, freq, remarks);
-                                                           medicineList.add(medicine);
-
-                                                           setMedicineList(medicineList);
-                                                           Log.d(TAG, "Medicine List first item:" + medicineList.indexOf(0));
-                                                           Log.d(TAG, "Medicine added");
-
-                                                       } else {
-                                                           Log.d(TAG, "No such document");
-                                                       }
-
-                                                       reference.getMedicine(medicineList);
-
-                                                   }
-                                               }
-                                           }
-
-
-                                       }
-                )
-                .addOnFailureListener(new OnFailureListener() {
+        medicineCollection
+                .addSnapshotListener(new EventListener<QuerySnapshot>()
+                {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e)
+                    {
+                        if (e != null)
+                        {
+                            Log.w("FirestoreHelper", "Listen failed.", e);
+                            return;
+                        }
+                        List<Medicine> allmedicineList = new ArrayList<>();
+                        List<ScheduleTask> allTasks = new ArrayList<>();
+                        //medicineList.clear();
+                        for (DocumentSnapshot document : value)
+                        {
+
+                                String id = (String) document.get("Id");
+                                String medName = (String) document.get("MedicineName");
+                                String amt = (String) document.get("Amount");
+                                String freq = (String) document.get("Frequency");
+                                String remarks = (String) document.get("Remarks");
+
+
+                                Medicine medicine = new Medicine(id, medName, amt, freq, remarks);
+                                allmedicineList.add(medicine);
+                        }
+                        reference.getMedicine(allmedicineList);
                     }
                 });
+
     }
 
     public  FirestoreHelper(){}
 
     public void storeMedicine(MainActivity r) {
+        final MainActivity ref = r;
+            medicineCollection.get().
+                    addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
 
-    }
+                            medicineList = new ArrayList<>();
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    String id = (String) document.get("Id");
+                                    String medName = (String) document.get("MedicineName");
+                                    String amt = (String) document.get("Amount");
+                                    String freq = (String) document.get("Frequency");
+                                    String remarks = (String) document.get("Remarks");
+
+
+                                    Medicine medicine = new Medicine(id, medName, amt, freq, remarks);
+                                    medicineList.add(medicine);
+
+                                }
+                                ref.getMedicine(medicineList);
+
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                return;
+                            }
+                        }
+                    });
+        }
+
 
 
     public static void deleteData(Medicine med) {
@@ -164,9 +183,6 @@ public class FirestoreHelper {
         }
     }
 
-    public List<Medicine> getMedicineList() {
-        return medicineList;
-    }
 
     public void setMedicineList(List<Medicine> medicineList) {
         this.medicineList = medicineList;

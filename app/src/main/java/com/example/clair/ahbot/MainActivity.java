@@ -41,6 +41,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,17 +72,12 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    //region firebase database
-//    private FirebaseDatabase fFirebaseDatabase;
-//    private DatabaseReference fDatabaseReference;
-//    private ChildEventListener fChildEventListener;
-//    Firestore f;
-    //endregion
 
-    //region firebase auth
+    //region firebase
     private FirebaseAuth fFirebaseAuth;
     private FirebaseAuth.AuthStateListener fAuthStateListener;
     private GoogleSignInClient mGoogleSignInClient;
+    FirestoreHelper db;
     //endregion
     public static final int PERMISSION_REQUEST = 200;
 
@@ -92,10 +89,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext=this;
+        FirestoreSetting fs = new FirestoreSetting();
+        db = new FirestoreHelper(this);
+        db.storeMedicine(this);
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST);
 
         }
+
 
         //region auth
         fFirebaseAuth= FirebaseAuth.getInstance();
@@ -507,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    FirestoreHelper db = new FirestoreHelper(this);
+
     public void getMedicine(List<Medicine> medlist) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
@@ -522,15 +523,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String showMedicine(){
-        String i = "";
+        String s = "";
         if (medicines != null) {
 
-            for (Medicine medicine : medicines) {
-                i += medicine.getMedName() + " " ;
+            for (int i = 0; i < medicines.size(); i++) {
+                Medicine medicine = medicines.get(i);
+                s += "Number " + (i+1) + medicine.getMedName() + " " ;
             }
-            return "Your medicine are " + i;
+            return "Your medicine are " + s;
         } else{
             return "You haven't added any medicine";
+        }
+    }
+
+    public static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) {}
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
         }
     }
 
@@ -564,6 +590,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onDestroy() {
+        deleteCache(this);
         shouldDetect = false;
         //Close the Text to Speech Library
         if(textToSpeech != null) {

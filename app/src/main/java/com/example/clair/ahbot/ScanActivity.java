@@ -90,9 +90,9 @@ public class ScanActivity extends AppCompatActivity {
                     Medicine medicine = new Medicine(id, array[0], array[1], array[2], array[3]);
 
                     db.saveData(medicine);
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    //finish();
+                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    //startActivity(intent);
+                    finish();
                 }
             }
         });
