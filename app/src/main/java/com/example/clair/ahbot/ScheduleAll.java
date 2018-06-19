@@ -19,33 +19,36 @@ import javax.annotation.Nullable;
 
 
 public class ScheduleAll extends Fragment{
-    public static final String TAB = "FragmentAll";
 
     RecyclerView rvScheduleAll;
     TaskAdapter taskAdapter;
     RecyclerView.LayoutManager rLayourManager;
     List<ScheduleTask> myDatasaet;
-    FirestoreHelper firestoreHelper;
     AddTask at=new AddTask();
-    Schedule s;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        s=new Schedule();
         View view = inflater.inflate(R.layout.fragment_schedule_all, container, false);
         rvScheduleAll = view.findViewById(R.id.rvScheduleAll);
-        rLayourManager=new LinearLayoutManager(s.getApplication());
+        rLayourManager=new LinearLayoutManager(Schedule.Instance.getApplication());
         rvScheduleAll.setLayoutManager(rLayourManager);
         taskAdapter=new TaskAdapter(this.getContext());
+        if(myDatasaet != null) {
+            UpdateList(myDatasaet);
+        }
         rvScheduleAll.setAdapter(taskAdapter);
-        //firestoreHelper.getTasks();
 
     return view;
     }
     public void UpdateList(List<ScheduleTask> st){
+    if(taskAdapter!=null) {
         taskAdapter.deleteEverything();
-        taskAdapter.addAllItems(st);
+        taskAdapter.addAllItems(st,"all");
+    }
+    else {
+        myDatasaet = st;
+    }
     }
 class rvScheduleAll extends RecyclerView.ViewHolder implements View.OnClickListener{
 

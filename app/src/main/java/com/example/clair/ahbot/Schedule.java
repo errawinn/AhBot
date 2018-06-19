@@ -29,43 +29,32 @@ import java.util.List;
 
 public class Schedule extends AppCompatActivity {
 
+    public static Schedule Instance;
+
 private  SectionPageAdapter sectionPageAdapter;
 private ViewPager viewPager;
 
     protected ScheduleAll scheduleAll;
     protected ScheduleThisWeek scheduleThisWeek;
     protected ScheduleToday scheduleToday;
-    FirestoreHelper firestoreHelper;
+    ScheduleTaskFirestoreHelper firestoreHelper;
 List<ScheduleTask> scheduleTaskList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         scheduleAll = new ScheduleAll();
         scheduleThisWeek = new ScheduleThisWeek();
-        scheduleToday = new ScheduleToday();        sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
+        scheduleToday = new ScheduleToday();
+        sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
         viewPager=findViewById(R.id.container);
         setupViewPager(viewPager);
-        firestoreHelper=new FirestoreHelper();
+        firestoreHelper=new ScheduleTaskFirestoreHelper(this);
         firestoreHelper.getTasks(this);
 
 TabLayout tabLayout=findViewById(R.id.tabs);
-tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
 
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-});
 tabLayout.setupWithViewPager(viewPager);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -118,5 +107,7 @@ tabLayout.setupWithViewPager(viewPager);
 public void setTaskList(List<ScheduleTask> scheduleTasks){
         scheduleTaskList=scheduleTasks;
      scheduleAll.UpdateList(scheduleTaskList);
+     scheduleThisWeek.UpdateList(scheduleTaskList);
+     scheduleToday.UpdateList(scheduleTaskList);
 }
 }

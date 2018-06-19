@@ -383,6 +383,11 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent=new Intent(MainActivity.this,Schedule.class);
                         startActivity(intent);
                     }
+                    else if (speech.equalsIgnoreCase("redirecting you to create reminder page")){
+                        responseText=speech;
+                        Intent intent=new Intent(MainActivity.this,AddTask.class);
+                        startActivity(intent);
+                    }
                     else {
                         responseText = speech;
                     }
