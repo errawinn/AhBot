@@ -27,7 +27,7 @@ public class AddTask extends AppCompatActivity{
 
     static AddTask Instance;
     Calendar c;
-    FirestoreHelper f;
+    ScheduleTaskFirestoreHelper f;
     FirebaseUser user;
 
 EditText EtEnterTask;
@@ -42,7 +42,7 @@ Button BtnSubmit;
         c=Calendar.getInstance();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        f=new FirestoreHelper();
+        f=new ScheduleTaskFirestoreHelper();
 
         EtEnterTask=findViewById(R.id.etEnterTask);
         ChkDaily=findViewById(R.id.chkEveryday);
