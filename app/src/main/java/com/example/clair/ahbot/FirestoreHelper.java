@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -39,7 +40,7 @@ public class FirestoreHelper {
 
     //endregion
 
-    static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("users").document("MedicineList").collection("Medicine");
+    static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
 
 
     public FirestoreHelper(MainActivity r) {
