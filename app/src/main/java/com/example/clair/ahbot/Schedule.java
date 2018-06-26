@@ -50,6 +50,7 @@ List<ScheduleTask> scheduleTaskList;
         sectionPageAdapter=new SectionPageAdapter(getSupportFragmentManager());
         viewPager=findViewById(R.id.container);
         setupViewPager(viewPager);
+        viewPager.setCurrentItem(3);
         firestoreHelper=new ScheduleTaskFirestoreHelper(this);
         firestoreHelper.getTasks(this);
 
@@ -74,6 +75,7 @@ tabLayout.setupWithViewPager(viewPager);
         sectionPageAdapter.addFragment(scheduleThisWeek,"This Week");
         sectionPageAdapter.addFragment(scheduleAll, "All");
         viewPager.setAdapter(sectionPageAdapter);
+
     }
     //region menu
     @Override

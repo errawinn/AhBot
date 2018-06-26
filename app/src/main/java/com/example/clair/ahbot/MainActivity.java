@@ -389,6 +389,20 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent=new Intent(MainActivity.this,AddTask.class);
                         startActivity(intent);
                     }
+                    else if (speech.equalsIgnoreCase("add_function")){
+                        aiRequest.setQuery("my email is " + fFirebaseAuth.getCurrentUser().getEmail());
+                        try{
+                            aiResponse = aiDataService.request(aiRequest); // need exception because internet might not work --> Alt + Enter
+
+                            result = aiResponse.getResult();
+                            fulfillment = result.getFulfillment();
+                            speech = fulfillment.getSpeech();
+                            Log.d("email", speech);
+                        }catch (AIServiceException e) {
+                            e.printStackTrace();
+                        }
+                        responseText = speech;
+                    }
                     else {
                         responseText = speech;
                     }
@@ -397,6 +411,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
+
+
             }
         };
         Threadings.runInBackgroundThread(runnable);
