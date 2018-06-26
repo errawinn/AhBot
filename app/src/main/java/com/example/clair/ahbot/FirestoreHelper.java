@@ -40,10 +40,9 @@ public class FirestoreHelper {
 
     //endregion
 
-    static CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
-
-
     public FirestoreHelper(MainActivity r) {
+
+        CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
 
         final MainActivity reference = r;
         medicineCollection
@@ -84,7 +83,9 @@ public class FirestoreHelper {
 
     public void storeMedicine(MainActivity r) {
         final MainActivity ref = r;
-            medicineCollection.get().
+        CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
+
+        medicineCollection.get().
                     addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
@@ -116,6 +117,8 @@ public class FirestoreHelper {
 
 
     public static void deleteData(Medicine med) {
+        CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
+
         Medicine medicine = med;
         String id = medicine.getId();
         medicineCollection.document(id)
@@ -137,6 +140,8 @@ public class FirestoreHelper {
 
     //one method to add one 'row' of data
     public static void saveData(Medicine medicine) {
+        CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
+
         Map<String, String> data = new HashMap<String, String>();
         data.put("MedicineName", medicine.getMedName());
         data.put("Amount", medicine.getMedAmount());
@@ -158,6 +163,8 @@ public class FirestoreHelper {
     }
 
     public static void updateData(Medicine med) {
+        CollectionReference medicineCollection = FirebaseFirestore.getInstance().collection("MedicineList").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("Medicines");
+
         medicineCollection.document(med.getId())
                 .update("MedicineName", med.getMedName(),
                         "Amount", med.getMedAmount(),

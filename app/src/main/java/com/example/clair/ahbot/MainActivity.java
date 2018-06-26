@@ -527,11 +527,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getMedicine(List<Medicine> medlist) {
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
-            Log.e("logged in", "NOT logged in");
-        } else{
-            Log.e("logged in", "IS logged in Email: :" + FirebaseAuth.getInstance().getCurrentUser().getEmail() );
-        }
+
 
        // DisplayMedicine display = new DisplayMedicine();
         medicines = medlist;
@@ -540,6 +536,11 @@ public class MainActivity extends AppCompatActivity {
 
     public String showMedicine(){
         String s = "";
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            Log.e("logged in", "NOT logged in");
+        } else{
+            Log.e("logged in", "IS logged in Email: :" + FirebaseAuth.getInstance().getCurrentUser().getEmail() );
+        }
         if (medicines != null) {
 
             for (int i = 0; i < medicines.size(); i++) {
