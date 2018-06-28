@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -22,6 +23,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.instrumentation.stats.Tag;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -44,6 +46,13 @@ public class ScanActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        barcode.release();
+        cameraSource.release();
     }
 
     @Override
@@ -109,10 +118,11 @@ public class ScanActivity extends AppCompatActivity {
                     String[] array = barcode.split("_");
                     Medicine medicine = new Medicine(id, array[0], array[1], array[2], array[3]);
 
+                    Log.d("Test", "Test scanning...");
                     db.saveData(medicine);
-                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    //startActivity(intent);
-                    finish();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    //finish();
                 }
             }
         });
